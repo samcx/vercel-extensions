@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import stripAnsi from 'strip-ansi';
 
 type InstalledExtension = {
   name: string;
@@ -26,7 +27,7 @@ describe('base level help output', () => {
   });
 
   it('help', () => {
-    expect(help()).toMatchSnapshot();
+    expect(stripAnsi(help())).toMatchSnapshot();
   });
 
   it('shows installed extensions with descriptions', () => {
@@ -40,13 +41,13 @@ describe('base level help output', () => {
       },
     ]);
 
-    expect(help()).toContain('Installed Extensions:');
-    expect(help()).toContain(
+    expect(stripAnsi(help())).toContain('Installed Extensions:');
+    expect(stripAnsi(help())).toContain(
       'tennis  A Node-based tennis-flavored extension for the Vercel CLI.'
     );
   });
 
-  it('shows installed extension subcommands', () => {
+  it('does not show installed extension subcommands in root help', () => {
     mockListInstalledExtensions.mockReturnValue([
       {
         name: 'tennis',
@@ -62,6 +63,11 @@ describe('base level help output', () => {
       },
     ]);
 
-    expect(help()).toContain('tennis livescores  Fetch live tennis scores');
+    expect(stripAnsi(help())).toContain(
+      'tennis  A Node-based tennis-flavored extension for the Vercel CLI.'
+    );
+    expect(stripAnsi(help())).not.toContain(
+      'tennis livescores  Fetch live tennis scores'
+    );
   });
 });
