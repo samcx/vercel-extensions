@@ -5,6 +5,18 @@ import { commands } from '../../commands/index';
 
 const EXTENSION_PREFIX = 'vercel-';
 
+type ExtensionCommand = {
+  name: string;
+  description: string;
+};
+
+type InstalledExtension = {
+  name: string;
+  description: string;
+  path: string;
+  commands: ExtensionCommand[];
+};
+
 export function getExtensionsDir(): string {
   return path.join(getGlobalPathConfig(), 'extensions');
 }
@@ -33,11 +45,7 @@ export function getInstalledExtensionNames(): string[] {
   }
 }
 
-export function listInstalledExtensions(): Array<{
-  name: string;
-  description: string;
-  path: string;
-}> {
+export function listInstalledExtensions(): InstalledExtension[] {
   try {
     const extensionsDir = getExtensionsDir();
 
@@ -59,15 +67,39 @@ export function listInstalledExtensions(): Array<{
         const packageJsonPath = path.join(extensionPath, 'package.json');
 
         let description = '(no description)';
+        let commands: ExtensionCommand[] = [];
 
         try {
           const packageJson = JSON.parse(
             readFileSync(packageJsonPath, 'utf8')
           ) as {
             description?: unknown;
+            vercelExtension?: {
+              commands?: Array<{
+                name?: unknown;
+                description?: unknown;
+              }>;
+            };
           };
           if (typeof packageJson.description === 'string') {
             description = packageJson.description;
+          }
+          if (Array.isArray(packageJson.vercelExtension?.commands)) {
+            commands = packageJson.vercelExtension.commands.flatMap(command => {
+              if (
+                typeof command.name !== 'string' ||
+                typeof command.description !== 'string'
+              ) {
+                return [];
+              }
+
+              return [
+                {
+                  name: command.name,
+                  description: command.description,
+                },
+              ];
+            });
           }
         } catch {}
 
@@ -75,6 +107,7 @@ export function listInstalledExtensions(): Array<{
           name: entry.name.slice(EXTENSION_PREFIX.length),
           description,
           path: extensionPath,
+          commands,
         };
       })
       .sort((a, b) => a.name.localeCompare(b.name));

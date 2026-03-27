@@ -95,21 +95,31 @@ export const help = () => `
     -S, --scope                    Set a custom scope
     -t ${chalk.underline('TOKEN')}, --token=${chalk.underline(
       'TOKEN'
-    )}        Login token
-
-${(() => {
-  const extensions = listInstalledExtensions();
-  if (extensions.length === 0) {
-    return '';
-  }
-  const longestName = Math.max(...extensions.map(extension => extension.name.length));
-  return `\n  ${chalk.dim('Installed Extensions:')}\n\n${extensions
-    .map(
-      extension =>
-        `      ${extension.name.padEnd(longestName + 2)}${extension.description}`
-    )
-    .join('\n')}\n`;
-})()}
+    )}        Login token${(() => {
+      const extensions = listInstalledExtensions();
+      if (extensions.length === 0) {
+        return '';
+      }
+      const rows = extensions.flatMap(extension => [
+        {
+          command: extension.name,
+          description: extension.description,
+        },
+        ...extension.commands.map(command => ({
+          command: `${extension.name} ${command.name}`,
+          description: command.description,
+        })),
+      ]);
+      const longestCommand = Math.max(
+        ...rows.map(extension => extension.command.length)
+      );
+      return `\n  ${chalk.dim('Installed Extensions:')}\n\n${rows
+        .map(
+          extension =>
+            `      ${extension.command.padEnd(longestCommand + 2)}${extension.description}`
+        )
+        .join('\n')}\n`;
+    })()}
 
   ${chalk.dim('Examples:')}
 

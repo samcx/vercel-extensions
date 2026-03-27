@@ -21,8 +21,10 @@ describe('base level help output', () => {
     mockListInstalledExtensions.mockReturnValue([
       {
         name: 'tennis',
-        description: 'A Node-based tennis-flavored extension for the Vercel CLI.',
+        description:
+          'A Node-based tennis-flavored extension for the Vercel CLI.',
         path: '/tmp/extensions/vercel-tennis',
+        commands: [],
       },
     ]);
 
@@ -30,5 +32,24 @@ describe('base level help output', () => {
     expect(help()).toContain(
       'tennis  A Node-based tennis-flavored extension for the Vercel CLI.'
     );
+  });
+
+  it('shows installed extension subcommands', () => {
+    mockListInstalledExtensions.mockReturnValue([
+      {
+        name: 'tennis',
+        description:
+          'A Node-based tennis-flavored extension for the Vercel CLI.',
+        path: '/tmp/extensions/vercel-tennis',
+        commands: [
+          {
+            name: 'livescores',
+            description: 'Fetch live tennis scores',
+          },
+        ],
+      },
+    ]);
+
+    expect(help()).toContain('tennis livescores  Fetch live tennis scores');
   });
 });
