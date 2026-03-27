@@ -97,10 +97,7 @@ export default async function install(
       return 1;
     }
 
-    if (getInstalledExtension(name)) {
-      output.error(`Extension "${name}" is already installed.`);
-      return 1;
-    }
+    const existing = getInstalledExtension(name);
 
     if (!yes) {
       if (!client.stdin.isTTY) {
@@ -139,8 +136,13 @@ export default async function install(
         return 1;
       }
 
+      if (existing) {
+        rmSync(destDir, { recursive: true, force: true });
+      }
       renameSync(tmpDir, destDir);
-      output.success(`Installed extension "${name}" from ${owner}/${repo}.`);
+      output.success(
+        `${existing ? 'Re-installed' : 'Installed'} extension "${name}" from ${owner}/${repo}.`
+      );
       return 0;
     } catch (err: unknown) {
       try {
@@ -191,12 +193,14 @@ export default async function install(
   }
 
   const symlinkTarget = path.join(extensionsDir, `vercel-${name}`);
-  if (existsSync(symlinkTarget)) {
-    output.error(`Extension "${name}" is already installed.`);
-    return 1;
+  const alreadyInstalled = existsSync(symlinkTarget);
+  if (alreadyInstalled) {
+    rmSync(symlinkTarget, { recursive: true, force: true });
   }
 
   symlinkSync(absPath, symlinkTarget, 'junction');
-  output.success(`Linked extension "${name}" from ${absPath}.`);
+  output.success(
+    `${alreadyInstalled ? 'Re-linked' : 'Linked'} extension "${name}" from ${absPath}.`
+  );
   return 0;
 }
