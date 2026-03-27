@@ -1079,8 +1079,7 @@ const main = async () => {
 
 main()
   .then(async exitCode => {
-    const shouldCheckForUpdates =
-      !process.env.NO_UPDATE_NOTIFIER && !process.env.VERCEL;
+    const shouldCheckForUpdates = false;
 
     if (shouldCheckForUpdates) {
       const latest = getLatestVersion({
