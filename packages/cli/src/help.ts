@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { getInstalledExtensionNames } from './util/extension/registry';
+import { listInstalledExtensions } from './util/extension/registry';
 
 // Hardcoded to avoid importing pkg.ts which pulls in more dependencies
 const packageName = 'vercel';
@@ -98,12 +98,16 @@ export const help = () => `
     )}        Login token
 
 ${(() => {
-  const names = getInstalledExtensionNames();
-  if (names.length === 0) {
+  const extensions = listInstalledExtensions();
+  if (extensions.length === 0) {
     return '';
   }
-  return `\n  ${chalk.dim('Installed Extensions:')}\n\n${names
-    .map(name => `      ${name}`)
+  const longestName = Math.max(...extensions.map(extension => extension.name.length));
+  return `\n  ${chalk.dim('Installed Extensions:')}\n\n${extensions
+    .map(
+      extension =>
+        `      ${extension.name.padEnd(longestName + 2)}${extension.description}`
+    )
     .join('\n')}\n`;
 })()}
 
