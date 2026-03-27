@@ -39,7 +39,7 @@ function getExtensionNameFromRepo(repo: string): string {
   return repo.startsWith('vercel-') ? repo.slice('vercel-'.length) : repo;
 }
 
-function validatePackageJson(dir: string, expectedName: string): string | null {
+function findExtensionBin(dir: string): { name: string; path: string } | null {
   const pkgPath = path.join(dir, 'package.json');
   let pkg: { bin?: unknown };
 
@@ -49,17 +49,16 @@ function validatePackageJson(dir: string, expectedName: string): string | null {
     return null;
   }
 
-  const binKey = `vercel-${expectedName}`;
   const { bin } = pkg;
-
-  if (typeof bin === 'string') {
-    return path.join(dir, bin);
-  }
 
   if (bin && typeof bin === 'object') {
     const bins = bin as Record<string, unknown>;
-    if (typeof bins[binKey] === 'string') {
-      return path.join(dir, bins[binKey] as string);
+    const binKey = Object.keys(bins).find(k => k.startsWith('vercel-'));
+    if (binKey && typeof bins[binKey] === 'string') {
+      return {
+        name: binKey.slice('vercel-'.length),
+        path: path.join(dir, bins[binKey] as string),
+      };
     }
   }
 
@@ -123,7 +122,6 @@ export default async function install(
     }
 
     const tmpDir = mkdtempSync(path.join(os.tmpdir(), 'vercel-ext-'));
-    const destDir = path.join(extensionsDir, `vercel-${name}`);
 
     try {
       const url = `https://github.com/${owner}/${repo}.git`;
@@ -131,16 +129,23 @@ export default async function install(
         stdio: 'inherit',
       });
 
-      const binPath = validatePackageJson(tmpDir, name);
-      if (!binPath) {
+      const ext = findExtensionBin(tmpDir);
+      if (!ext) {
         output.error(
-          `Repository ${owner}/${repo} does not have a valid package.json with a "vercel-${name}" bin entry.`
+          `Repository ${owner}/${repo} does not have a valid package.json with a "vercel-*" bin entry.`
         );
         return 1;
       }
 
-      renameSync(tmpDir, destDir);
-      output.success(`Installed extension "${name}" from ${owner}/${repo}.`);
+      const resolvedName = ext.name;
+      const resolvedDestDir = path.join(
+        extensionsDir,
+        `vercel-${resolvedName}`
+      );
+      renameSync(tmpDir, resolvedDestDir);
+      output.success(
+        `Installed extension "${resolvedName}" from ${owner}/${repo}.`
+      );
       return 0;
     } catch (err: unknown) {
       try {
