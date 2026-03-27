@@ -67,6 +67,7 @@ describe('index', () => {
         ['skills', 'skills'],
         ['switch', 'teams'],
         ['target', 'target'],
+        ['tennis', 'tennis'],
         ['targets', 'target'],
         ['team', 'teams'],
         ['teams', 'teams'],

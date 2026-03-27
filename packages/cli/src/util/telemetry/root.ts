@@ -348,6 +348,13 @@ export class RootTelemetryClient extends TelemetryClient {
     });
   }
 
+  trackCliCommandTennis(actual: string) {
+    this.trackCliCommand({
+      command: 'tennis',
+      value: actual,
+    });
+  }
+
   trackCliCommandTeams(actual: string) {
     this.trackCliCommand({
       command: 'teams',
