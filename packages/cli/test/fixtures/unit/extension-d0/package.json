@@ -1,0 +1,6 @@
+{
+  "name": "vercel-d0",
+  "version": "0.1.0",
+  "description": "Ask d0 a natural-language question about your data",
+  "bin": { "vercel-d0": "bin.js" }
+}

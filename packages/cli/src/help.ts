@@ -8,6 +8,10 @@ const metricsLine = process.env.FF_METRICS
   ? '\n      metrics                          Queries observability metrics for your project or team'
   : '';
 
+const d0Line = process.env.FF_D0
+  ? '\n      d0                   [question]  Ask d0 a natural-language question about your data'
+  : '';
+
 export const help = () => `
   ${chalk.bold(`${logo} ${packageName}`)} [options] <command | path>
 
@@ -59,7 +63,7 @@ export const help = () => `
       dns                  [name]      Manages your DNS records
       domains              [name]      Manages your domain names
       httpstat             path        Visualize HTTP timing statistics for deployments
-      logs                 [url]       Displays the logs for a deployment${metricsLine}
+      logs                 [url]       Displays the logs for a deployment${metricsLine}${d0Line}
       mcp                              Set up MCP agents and configuration
       microfrontends                   Manages your microfrontends
       projects                         Manages your Projects
