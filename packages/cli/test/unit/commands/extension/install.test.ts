@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { client } from '../../../mocks/client';
 import extension from '../../../../src/commands/extension';
 
-const mockGetInstalledExtension = vi.hoisted(() => vi.fn(() => null));
+const mockGetInstalledExtension = vi.hoisted(() => vi.fn((): unknown => null));
 const mockIsNameConflict = vi.hoisted(() => vi.fn(() => false));
 const mockEnsureExtensionsDir = vi.hoisted(() =>
   vi.fn(() => '/tmp/extensions')
