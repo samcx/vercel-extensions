@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+import { getInstalledExtensionNames } from './util/extension/registry';
 
 // Hardcoded to avoid importing pkg.ts which pulls in more dependencies
 const packageName = 'vercel';
@@ -58,6 +59,7 @@ export const help = () => `
       curl                 [path]      cURL requests to your linked project's deployment [beta]
       dns                  [name]      Manages your DNS records
       domains              [name]      Manages your domain names
+      extension            [cmd]       Manage Vercel CLI extensions
       httpstat             path        Visualize HTTP timing statistics for deployments
       logs                 [url]       Displays the logs for a deployment${metricsLine}
       mcp                              Set up MCP agents and configuration
@@ -94,6 +96,16 @@ export const help = () => `
     -t ${chalk.underline('TOKEN')}, --token=${chalk.underline(
       'TOKEN'
     )}        Login token
+
+${(() => {
+  const names = getInstalledExtensionNames();
+  if (names.length === 0) {
+    return '';
+  }
+  return `\n  ${chalk.dim('Installed Extensions:')}\n\n${names
+    .map(name => `      ${name}`)
+    .join('\n')}\n`;
+})()}
 
   ${chalk.dim('Examples:')}
 

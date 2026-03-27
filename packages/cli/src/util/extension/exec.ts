@@ -4,6 +4,7 @@ import { dirname } from 'path';
 import { listen } from 'async-listen';
 import { scanParentDirs, walkParentDirs } from '@vercel/build-utils';
 import { createProxy } from './proxy';
+import { getInstalledExtension } from './registry';
 import type Client from '../client';
 import output from '../../output-manager';
 import { errorToString } from '@vercel/error-utils';
@@ -38,6 +39,14 @@ export async function execExtension(
       start: cwd,
       filename: `node_modules/.bin/${extensionCommand}`,
     });
+  }
+
+  if (!extensionPath) {
+    // Check managed extensions directory (`~/.vercel/extensions/`)
+    const managed = getInstalledExtension(name);
+    if (managed) {
+      extensionPath = managed.binPath;
+    }
   }
 
   if (!extensionPath) {
