@@ -1,10 +1,10 @@
 import {
+  cpSync,
   existsSync,
   mkdtempSync,
   readFileSync,
   renameSync,
   rmSync,
-  symlinkSync,
 } from 'fs';
 import os from 'os';
 import path from 'path';
@@ -190,13 +190,13 @@ export default async function install(
     return 1;
   }
 
-  const symlinkTarget = path.join(extensionsDir, `vercel-${name}`);
-  if (existsSync(symlinkTarget)) {
+  const destDir = path.join(extensionsDir, `vercel-${name}`);
+  if (existsSync(destDir)) {
     output.error(`Extension "${name}" is already installed.`);
     return 1;
   }
 
-  symlinkSync(absPath, symlinkTarget, 'junction');
-  output.success(`Linked extension "${name}" from ${absPath}.`);
+  cpSync(absPath, destDir, { recursive: true });
+  output.success(`Installed extension "${name}" from ${absPath}.`);
   return 0;
 }
