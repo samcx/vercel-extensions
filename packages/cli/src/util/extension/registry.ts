@@ -84,8 +84,9 @@ export function listInstalledExtensions(): InstalledExtension[] {
           if (typeof packageJson.description === 'string') {
             description = packageJson.description;
           }
-          if (Array.isArray(packageJson.vercelExtension?.commands)) {
-            commands = packageJson.vercelExtension.commands.flatMap(command => {
+          const extensionCommands = packageJson.vercelExtension?.commands;
+          if (Array.isArray(extensionCommands)) {
+            commands = extensionCommands.flatMap(command => {
               if (
                 typeof command.name !== 'string' ||
                 typeof command.description !== 'string'

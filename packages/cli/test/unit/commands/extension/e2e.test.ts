@@ -1,5 +1,12 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { cpSync, mkdtempSync, mkdirSync, rmSync } from 'fs';
+import {
+  cpSync,
+  mkdtempSync,
+  mkdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'fs';
 import os from 'os';
 import path from 'path';
 import { client } from '../../../mocks/client';
@@ -31,8 +38,34 @@ describe('extension lifecycle (e2e)', () => {
     mkdirSync(path.join(tmpGlobalConfig, 'extensions'), { recursive: true });
     mockGetGlobalPathConfig.mockReturnValue(tmpGlobalConfig);
     mockExeca.mockImplementation(async (_cmd: string, args: string[]) => {
-      const cloneDest = args[4];
-      cpSync(FIXTURE_DIR, cloneDest, { recursive: true });
+      if (args[0] === 'clone') {
+        const cloneDest = args[4];
+        cpSync(FIXTURE_DIR, cloneDest, { recursive: true });
+        return { exitCode: 0 };
+      }
+
+      if (args[2] === 'pull') {
+        const extensionPath = args[1];
+        const packageJsonPath = path.join(extensionPath, 'package.json');
+        const packageJson = JSON.parse(
+          readFileSync(packageJsonPath, 'utf8')
+        ) as {
+          description: string;
+        };
+
+        writeFileSync(
+          packageJsonPath,
+          JSON.stringify(
+            {
+              ...packageJson,
+              description: 'An upgraded test extension that says hello',
+            },
+            null,
+            2
+          )
+        );
+      }
+
       return { exitCode: 0 };
     });
   });
@@ -42,11 +75,18 @@ describe('extension lifecycle (e2e)', () => {
     rmSync(tmpGlobalConfig, { recursive: true, force: true });
   });
 
-  it('install → list → remove → list empty', async () => {
+  it('install → upgrade → list → remove → list empty', async () => {
     client.setArgv('extension', 'install', 'owner/vercel-hello', '--yes');
     const installCode = await extension(client);
     expect(installCode, 'install exit code').toBe(0);
     await expect(client.stderr).toOutput('Installed extension');
+
+    client.reset();
+    mockGetGlobalPathConfig.mockReturnValue(tmpGlobalConfig);
+    client.setArgv('extension', 'upgrade', 'hello');
+    const upgradeCode = await extension(client);
+    expect(upgradeCode, 'upgrade exit code').toBe(0);
+    await expect(client.stderr).toOutput('Upgraded extension "hello".');
 
     client.reset();
     mockGetGlobalPathConfig.mockReturnValue(tmpGlobalConfig);
@@ -57,7 +97,9 @@ describe('extension lifecycle (e2e)', () => {
     const listed = listInstalledExtensions();
     expect(listed).toHaveLength(1);
     expect(listed[0].name).toBe('hello');
-    expect(listed[0].description).toBe('A test extension that says hello');
+    expect(listed[0].description).toBe(
+      'An upgraded test extension that says hello'
+    );
 
     client.reset();
     mockGetGlobalPathConfig.mockReturnValue(tmpGlobalConfig);

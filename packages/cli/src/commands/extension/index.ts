@@ -6,11 +6,13 @@ import { type Command, help } from '../help';
 import list from './list';
 import remove from './remove';
 import install from './install';
+import upgrade from './upgrade';
 import {
   extensionCommand,
   installSubcommand,
   listSubcommand,
   removeSubcommand,
+  upgradeSubcommand,
 } from './command';
 import { getFlagsSpecification } from '../../util/get-flags-specification';
 import { ExtensionTelemetryClient } from '../../util/telemetry/commands/extension';
@@ -21,6 +23,7 @@ const COMMAND_CONFIG = {
   install: getCommandAliases(installSubcommand),
   ls: getCommandAliases(listSubcommand),
   rm: getCommandAliases(removeSubcommand),
+  update: getCommandAliases(upgradeSubcommand),
 };
 
 export default async function extension(client: Client) {
@@ -81,6 +84,14 @@ export default async function extension(client: Client) {
       }
       telemetry.trackCliSubcommandRemove(subcommandOriginal);
       return remove(client, args);
+    case 'update':
+      if (needHelp) {
+        telemetry.trackCliFlagHelp('extension', subcommandOriginal);
+        printHelp(upgradeSubcommand);
+        return 2;
+      }
+      telemetry.trackCliSubcommandUpgrade(subcommandOriginal);
+      return upgrade(client, args);
     default:
       if (needHelp) {
         telemetry.trackCliFlagHelp('extension', subcommandOriginal);
