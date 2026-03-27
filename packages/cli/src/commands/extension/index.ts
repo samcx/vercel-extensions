@@ -6,12 +6,14 @@ import { type Command, help } from '../help';
 import list from './list';
 import remove from './remove';
 import install from './install';
+import skills from './skills';
 import upgrade from './upgrade';
 import {
   extensionCommand,
   installSubcommand,
   listSubcommand,
   removeSubcommand,
+  skillsSubcommand,
   upgradeSubcommand,
 } from './command';
 import { getFlagsSpecification } from '../../util/get-flags-specification';
@@ -23,6 +25,7 @@ const COMMAND_CONFIG = {
   install: getCommandAliases(installSubcommand),
   ls: getCommandAliases(listSubcommand),
   rm: getCommandAliases(removeSubcommand),
+  skills: getCommandAliases(skillsSubcommand),
   update: getCommandAliases(upgradeSubcommand),
 };
 
@@ -84,6 +87,14 @@ export default async function extension(client: Client) {
       }
       telemetry.trackCliSubcommandRemove(subcommandOriginal);
       return remove(client, args);
+    case 'skills':
+      if (needHelp) {
+        telemetry.trackCliFlagHelp('extension', subcommandOriginal);
+        printHelp(skillsSubcommand);
+        return 2;
+      }
+      telemetry.trackCliSubcommandSkills(subcommandOriginal);
+      return skills(client, args);
     case 'update':
       if (needHelp) {
         telemetry.trackCliFlagHelp('extension', subcommandOriginal);

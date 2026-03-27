@@ -47,6 +47,20 @@ export const removeSubcommand = {
   ],
 } as const;
 
+export const skillsSubcommand = {
+  name: 'skills',
+  aliases: [],
+  description: 'Copy skills from installed extensions into a target directory',
+  arguments: [{ name: 'target', required: true }],
+  options: [],
+  examples: [
+    {
+      name: 'Copy extension skills to the .agents/skills directory',
+      value: `${packageName} extension skills ./.agents/skills`,
+    },
+  ],
+} as const;
+
 export const upgradeSubcommand = {
   name: 'upgrade',
   aliases: ['update'],
@@ -74,6 +88,7 @@ export const extensionCommand = {
     installSubcommand,
     listSubcommand,
     removeSubcommand,
+    skillsSubcommand,
     upgradeSubcommand,
   ],
   options: [],

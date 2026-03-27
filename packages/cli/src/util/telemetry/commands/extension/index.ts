@@ -18,6 +18,10 @@ export class ExtensionTelemetryClient
     this.trackCliSubcommand({ subcommand: 'remove', value: actual });
   }
 
+  trackCliSubcommandSkills(actual: string) {
+    this.trackCliSubcommand({ subcommand: 'skills', value: actual });
+  }
+
   trackCliSubcommandUpgrade(actual: string) {
     this.trackCliSubcommand({ subcommand: 'upgrade', value: actual });
   }
