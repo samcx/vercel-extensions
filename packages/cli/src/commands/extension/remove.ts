@@ -1,10 +1,6 @@
 import { rmSync } from 'fs';
-import path from 'path';
 import type Client from '../../util/client';
-import {
-  getExtensionsDir,
-  getInstalledExtension,
-} from '../../util/extension/registry';
+import { listInstalledExtensions } from '../../util/extension/registry';
 import output from '../../output-manager';
 
 export default async function remove(
@@ -18,7 +14,9 @@ export default async function remove(
     return 1;
   }
 
-  const ext = getInstalledExtension(name);
+  const ext = listInstalledExtensions().find(
+    extension => extension.name === name
+  );
 
   if (!ext) {
     output.error(`Extension "${name}" is not installed.`);
@@ -44,8 +42,7 @@ export default async function remove(
     }
   }
 
-  const extDir = path.join(getExtensionsDir(), `vercel-${name}`);
-  rmSync(extDir, { recursive: true, force: true });
+  rmSync(ext.path, { recursive: true, force: true });
   output.success(`Extension "${name}" removed.`);
   return 0;
 }
