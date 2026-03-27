@@ -17,4 +17,8 @@ export class ExtensionTelemetryClient
   trackCliSubcommandRemove(actual: string) {
     this.trackCliSubcommand({ subcommand: 'remove', value: actual });
   }
+
+  trackCliSubcommandUpgrade(actual: string) {
+    this.trackCliSubcommand({ subcommand: 'upgrade', value: actual });
+  }
 }

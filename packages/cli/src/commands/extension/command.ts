@@ -47,12 +47,35 @@ export const removeSubcommand = {
   ],
 } as const;
 
+export const upgradeSubcommand = {
+  name: 'upgrade',
+  aliases: ['update'],
+  description: 'Upgrade installed extensions',
+  arguments: [{ name: 'name', required: false }],
+  options: [],
+  examples: [
+    {
+      name: 'Upgrade all installed extensions',
+      value: `${packageName} extension upgrade`,
+    },
+    {
+      name: 'Upgrade one extension',
+      value: `${packageName} extension upgrade hello`,
+    },
+  ],
+} as const;
+
 export const extensionCommand = {
   name: 'extension',
   aliases: ['ext'],
   description: 'Manage Vercel CLI extensions',
   arguments: [],
-  subcommands: [installSubcommand, listSubcommand, removeSubcommand],
+  subcommands: [
+    installSubcommand,
+    listSubcommand,
+    removeSubcommand,
+    upgradeSubcommand,
+  ],
   options: [],
   examples: [],
 } as const;

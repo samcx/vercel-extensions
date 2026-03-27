@@ -1,6 +1,18 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const mockListInstalledExtensions = vi.hoisted(() => vi.fn(() => []));
+type InstalledExtension = {
+  name: string;
+  description: string;
+  path: string;
+  commands: Array<{
+    name: string;
+    description: string;
+  }>;
+};
+
+const mockListInstalledExtensions = vi.hoisted(() =>
+  vi.fn<() => InstalledExtension[]>(() => [])
+);
 
 vi.mock('../../src/util/extension/registry', () => ({
   listInstalledExtensions: mockListInstalledExtensions,
