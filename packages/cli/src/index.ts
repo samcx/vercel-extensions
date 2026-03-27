@@ -69,6 +69,7 @@ import type { VercelConfig } from '@vercel/client';
 import { Agent as HttpsAgent } from 'https';
 import box from './util/output/box';
 import { execExtension } from './util/extension/exec';
+import { getInstalledExtensionNames } from './util/extension/registry';
 import { TelemetryEventStore } from './util/telemetry';
 import { RootTelemetryClient } from './util/telemetry/root';
 import { help } from './args';
@@ -694,7 +695,10 @@ const main = async () => {
           if (
             handleCommandTypo({
               command: targetCommand,
-              availableCommands: commandNames,
+              availableCommands: [
+                ...commandNames,
+                ...getInstalledExtensionNames(),
+              ],
             })
           ) {
             return 1;
@@ -725,6 +729,11 @@ const main = async () => {
         case 'env':
           telemetry.trackCliCommandEnv(userSuppliedSubCommand);
           func = (await import('./commands/env/index.js')).default;
+          break;
+        case 'extension':
+        case 'ext':
+          telemetry.trackCliCommandExtension(userSuppliedSubCommand);
+          func = (await import('./commands-bulk.js')).extension;
           break;
         case 'build':
           telemetry.trackCliCommandBuild(userSuppliedSubCommand);

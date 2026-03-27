@@ -1,0 +1,7 @@
+{
+  "name": "vercel-hello",
+  "description": "A test extension that says hello",
+  "bin": {
+    "vercel-hello": "bin.js"
+  }
+}
