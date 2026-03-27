@@ -12,7 +12,7 @@ const mockRenameSync = vi.hoisted(() => vi.fn());
 const mockRmSync = vi.hoisted(() => vi.fn());
 const mockMkdtempSync = vi.hoisted(() => vi.fn(() => '/tmp/vercel-ext-abc123'));
 const mockReadFileSync = vi.hoisted(() => vi.fn());
-const mockSymlinkSync = vi.hoisted(() => vi.fn());
+const mockCpSync = vi.hoisted(() => vi.fn());
 const mockExistsSync = vi.hoisted(() => vi.fn(() => false));
 
 vi.mock('../../../../src/util/extension/registry', () => ({
@@ -33,7 +33,7 @@ vi.mock('fs', async importOriginal => {
     renameSync: mockRenameSync,
     rmSync: mockRmSync,
     readFileSync: mockReadFileSync,
-    symlinkSync: mockSymlinkSync,
+    cpSync: mockCpSync,
     existsSync: mockExistsSync,
   };
 });
@@ -121,11 +121,11 @@ describe('extension install', () => {
     ]);
   });
 
-  it('links extension from local path', async () => {
+  it('copies extension from local path', async () => {
     client.setArgv('extension', 'install', '.', '--yes');
     const exitCode = await extension(client);
     expect(exitCode).toBe(0);
-    expect(mockSymlinkSync).toHaveBeenCalled();
-    await expect(client.stderr).toOutput('Linked extension');
+    expect(mockCpSync).toHaveBeenCalled();
+    await expect(client.stderr).toOutput('Installed extension');
   });
 });
