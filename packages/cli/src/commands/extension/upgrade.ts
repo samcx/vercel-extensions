@@ -1,9 +1,6 @@
 import execa from 'execa';
 import type Client from '../../util/client';
-import {
-  getInstalledExtension,
-  listInstalledExtensions,
-} from '../../util/extension/registry';
+import { listInstalledExtensions } from '../../util/extension/registry';
 import output from '../../output-manager';
 
 export default async function upgrade(
@@ -11,17 +8,10 @@ export default async function upgrade(
   args: string[]
 ): Promise<number> {
   const name = args[0];
+  const installedExtensions = listInstalledExtensions();
   const targets = name
-    ? [getInstalledExtension(name)].filter(
-        (
-          extension
-        ): extension is NonNullable<ReturnType<typeof getInstalledExtension>> =>
-          extension !== null
-      )
-    : listInstalledExtensions().map(extension => ({
-        name: extension.name,
-        path: extension.path,
-      }));
+    ? installedExtensions.filter(extension => extension.name === name)
+    : installedExtensions;
 
   if (name && targets.length === 0) {
     output.error(`Extension "${name}" is not installed.`);

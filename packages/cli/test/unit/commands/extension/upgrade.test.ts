@@ -12,15 +12,6 @@ type InstalledExtension = {
   }>;
 };
 
-type ExtensionInstall = {
-  name: string;
-  path: string;
-  binPath: string;
-} | null;
-
-const mockGetInstalledExtension = vi.hoisted(() =>
-  vi.fn<(name: string) => ExtensionInstall>()
-);
 const mockListInstalledExtensions = vi.hoisted(() =>
   vi.fn<() => InstalledExtension[]>(() => [])
 );
@@ -28,7 +19,7 @@ const mockExeca = vi.hoisted(() => vi.fn());
 
 vi.mock('../../../../src/util/extension/registry', () => ({
   listInstalledExtensions: mockListInstalledExtensions,
-  getInstalledExtension: mockGetInstalledExtension,
+  getInstalledExtension: vi.fn(),
   getExtensionsDir: vi.fn(),
   isNameConflict: vi.fn(),
   ensureExtensionsDir: vi.fn(),
@@ -40,7 +31,6 @@ describe('extension upgrade', () => {
   beforeEach(() => {
     client.reset();
     vi.clearAllMocks();
-    mockGetInstalledExtension.mockReturnValue(null);
     mockListInstalledExtensions.mockReturnValue([]);
     mockExeca.mockResolvedValue({ exitCode: 0 });
   });
@@ -53,11 +43,14 @@ describe('extension upgrade', () => {
   });
 
   it('upgrades one installed extension', async () => {
-    mockGetInstalledExtension.mockReturnValue({
-      name: 'hello',
-      path: '/tmp/extensions/vercel-hello',
-      binPath: '/tmp/extensions/vercel-hello/bin.js',
-    });
+    mockListInstalledExtensions.mockReturnValue([
+      {
+        name: 'hello',
+        description: 'Hello',
+        path: '/tmp/extensions/vercel-hello',
+        commands: [],
+      },
+    ]);
 
     client.setArgv('extension', 'upgrade', 'hello');
     const exitCode = await extension(client);
@@ -69,6 +62,28 @@ describe('extension upgrade', () => {
       expect.any(Object)
     );
     await expect(client.stderr).toOutput('Upgraded extension "hello".');
+  });
+
+  it('upgrades a named listed extension even when it is not runnable', async () => {
+    mockListInstalledExtensions.mockReturnValue([
+      {
+        name: 'broken',
+        description: '(no description)',
+        path: '/tmp/extensions/vercel-broken',
+        commands: [],
+      },
+    ]);
+
+    client.setArgv('extension', 'upgrade', 'broken');
+    const exitCode = await extension(client);
+
+    expect(exitCode).toBe(0);
+    expect(mockExeca).toHaveBeenCalledWith(
+      'git',
+      ['-C', '/tmp/extensions/vercel-broken', 'pull', '--ff-only'],
+      expect.any(Object)
+    );
+    await expect(client.stderr).toOutput('Upgraded extension "broken".');
   });
 
   it('upgrades all installed extensions when no name is provided', async () => {
