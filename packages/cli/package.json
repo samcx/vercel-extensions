@@ -1,6 +1,6 @@
 {
   "name": "@vercel/vercel-extensions",
-  "version": "50.37.9",
+  "version": "50.37.11",
   "type": "module",
   "preferGlobal": true,
   "license": "Apache-2.0",
