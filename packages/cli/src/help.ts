@@ -100,16 +100,10 @@ export const help = () => `
       if (extensions.length === 0) {
         return '';
       }
-      const rows = extensions.flatMap(extension => [
-        {
-          command: extension.name,
-          description: extension.description,
-        },
-        ...extension.commands.map(command => ({
-          command: `${extension.name} ${command.name}`,
-          description: command.description,
-        })),
-      ]);
+      const rows = extensions.map(extension => ({
+        command: extension.name,
+        description: extension.description,
+      }));
       const longestCommand = Math.max(
         ...rows.map(extension => extension.command.length)
       );
