@@ -2,7 +2,14 @@
 set -euo pipefail
 
 BUMP="${1:-patch}"
+LAST=$(gh release view --repo samcx/vercel-extensions --json tagName -q .tagName 2>/dev/null | sed 's/^v//')
+if [ -z "$LAST" ]; then
+  LAST=$(jq -r .version packages/cli/package.json)
+fi
+
+# Write last release version then bump from it
 cd packages/cli
+npm version "$LAST" --no-git-tag-version --allow-same-version >/dev/null
 npm version "$BUMP" --no-git-tag-version
 cd ../..
 
