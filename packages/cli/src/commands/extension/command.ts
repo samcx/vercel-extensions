@@ -47,12 +47,31 @@ export const removeSubcommand = {
   ],
 } as const;
 
+export const skillsSubcommand = {
+  name: 'skills',
+  aliases: [],
+  description: 'Copy skills from installed extensions into a target directory',
+  arguments: [{ name: 'target', required: true }],
+  options: [],
+  examples: [
+    {
+      name: 'Copy extension skills to the .agents/skills directory',
+      value: `${packageName} extension skills ./.agents/skills`,
+    },
+  ],
+} as const;
+
 export const extensionCommand = {
   name: 'extension',
   aliases: ['ext'],
   description: 'Manage Vercel CLI extensions',
   arguments: [],
-  subcommands: [installSubcommand, listSubcommand, removeSubcommand],
+  subcommands: [
+    installSubcommand,
+    listSubcommand,
+    removeSubcommand,
+    skillsSubcommand,
+  ],
   options: [],
   examples: [],
 } as const;
