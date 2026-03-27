@@ -9,16 +9,10 @@ const mockListen = vi.hoisted(() => vi.fn());
 const mockCreateProxy = vi.hoisted(() => vi.fn());
 const mockServer = vi.hoisted(() => ({ once: vi.fn(), close: vi.fn() }));
 
-vi.mock(
-  '@vercel/build-utils',
-  () => ({
-    scanParentDirs: mockScanParentDirs,
-    walkParentDirs: mockWalkParentDirs,
-  }),
-  {
-    virtual: true,
-  }
-);
+vi.mock('@vercel/build-utils', () => ({
+  scanParentDirs: mockScanParentDirs,
+  walkParentDirs: mockWalkParentDirs,
+}));
 
 vi.mock('which', () => ({
   default: {

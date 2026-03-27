@@ -111,6 +111,40 @@ describe('extension registry util', () => {
           name: 'hello',
           description: 'Hello extension',
           path: extensionDir,
+          commands: [],
+        },
+      ]);
+    });
+
+    it('returns extension commands from vercelExtension metadata', () => {
+      const extensionDir = path.join(getExtensionsDir(), 'vercel-tennis');
+      mkdirSync(extensionDir, { recursive: true });
+      writeFileSync(
+        path.join(extensionDir, 'package.json'),
+        JSON.stringify({
+          description: 'Tennis utilities',
+          vercelExtension: {
+            commands: [
+              {
+                name: 'livescores',
+                description: 'Fetch live tennis scores',
+              },
+            ],
+          },
+        })
+      );
+
+      expect(listInstalledExtensions()).toEqual([
+        {
+          name: 'tennis',
+          description: 'Tennis utilities',
+          path: extensionDir,
+          commands: [
+            {
+              name: 'livescores',
+              description: 'Fetch live tennis scores',
+            },
+          ],
         },
       ]);
     });
@@ -128,6 +162,7 @@ describe('extension registry util', () => {
           name: 'empty',
           description: '(no description)',
           path: extensionDir,
+          commands: [],
         },
       ]);
     });
@@ -141,6 +176,7 @@ describe('extension registry util', () => {
           name: 'missing',
           description: '(no description)',
           path: extensionDir,
+          commands: [],
         },
       ]);
     });
@@ -165,11 +201,13 @@ describe('extension registry util', () => {
           name: 'alpha',
           description: 'Alpha',
           path: alphaDir,
+          commands: [],
         },
         {
           name: 'zeta',
           description: 'Zeta',
           path: zetaDir,
+          commands: [],
         },
       ]);
     });

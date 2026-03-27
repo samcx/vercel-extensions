@@ -41,4 +41,10 @@ describe('extension (routing)', () => {
     const exitCode = await extension(client);
     expect(exitCode).toBe(2);
   });
+
+  it('shows upgrade subcommand help', async () => {
+    client.setArgv('extension', 'upgrade', '--help');
+    const exitCode = await extension(client);
+    expect(exitCode).toBe(2);
+  });
 });

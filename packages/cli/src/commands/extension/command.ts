@@ -61,6 +61,24 @@ export const skillsSubcommand = {
   ],
 } as const;
 
+export const upgradeSubcommand = {
+  name: 'upgrade',
+  aliases: ['update'],
+  description: 'Upgrade installed extensions',
+  arguments: [{ name: 'name', required: false }],
+  options: [],
+  examples: [
+    {
+      name: 'Upgrade all installed extensions',
+      value: `${packageName} extension upgrade`,
+    },
+    {
+      name: 'Upgrade one extension',
+      value: `${packageName} extension upgrade hello`,
+    },
+  ],
+} as const;
+
 export const extensionCommand = {
   name: 'extension',
   aliases: ['ext'],
@@ -71,6 +89,7 @@ export const extensionCommand = {
     listSubcommand,
     removeSubcommand,
     skillsSubcommand,
+    upgradeSubcommand,
   ],
   options: [],
   examples: [],

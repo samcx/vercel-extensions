@@ -72,9 +72,9 @@ export async function execExtension(
   let exitCode = 0;
 
   try {
-    const result = await execa(extensionPath, args, {
+    const child = execa(extensionPath, args, {
       cwd,
-      stdio: 'inherit',
+      stdin: 'inherit',
       reject: false,
       env: {
         ...process.env,
@@ -85,6 +85,11 @@ export async function execExtension(
         //   VERCEL_HELP
       },
     });
+    // `stdio: 'inherit'` bypasses the CLI's stdout/stderr, which sandboxes
+    // that capture output via pipes fail to read.
+    child.stdout?.pipe(process.stdout);
+    child.stderr?.pipe(process.stderr);
+    const result = await child;
     exitCode = result.exitCode;
     debug(`extension command exited with code ${exitCode}`);
   } catch (err: unknown) {

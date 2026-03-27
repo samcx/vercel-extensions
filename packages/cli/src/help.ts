@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { getInstalledExtensionNames } from './util/extension/registry';
+import { listInstalledExtensions } from './util/extension/registry';
 
 // Hardcoded to avoid importing pkg.ts which pulls in more dependencies
 const packageName = 'vercel';
@@ -95,17 +95,31 @@ export const help = () => `
     -S, --scope                    Set a custom scope
     -t ${chalk.underline('TOKEN')}, --token=${chalk.underline(
       'TOKEN'
-    )}        Login token
-
-${(() => {
-  const names = getInstalledExtensionNames();
-  if (names.length === 0) {
-    return '';
-  }
-  return `\n  ${chalk.dim('Installed Extensions:')}\n\n${names
-    .map(name => `      ${name}`)
-    .join('\n')}\n`;
-})()}
+    )}        Login token${(() => {
+      const extensions = listInstalledExtensions();
+      if (extensions.length === 0) {
+        return '';
+      }
+      const rows = extensions.flatMap(extension => [
+        {
+          command: extension.name,
+          description: extension.description,
+        },
+        ...extension.commands.map(command => ({
+          command: `${extension.name} ${command.name}`,
+          description: command.description,
+        })),
+      ]);
+      const longestCommand = Math.max(
+        ...rows.map(extension => extension.command.length)
+      );
+      return `\n  ${chalk.dim('Installed Extensions:')}\n\n${rows
+        .map(
+          extension =>
+            `      ${extension.command.padEnd(longestCommand + 2)}${extension.description}`
+        )
+        .join('\n')}\n`;
+    })()}
 
   ${chalk.dim('Examples:')}
 
