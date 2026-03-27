@@ -8,6 +8,7 @@ import { getFlagsSpecification } from '../../util/get-flags-specification';
 import { chatSubcommand } from './command';
 import { validateJsonOutput } from '../../util/output-format';
 import output from '../../output-manager';
+import { getSupportScopeParams } from './scope';
 
 interface ChatMessage {
   role?: string;
@@ -55,7 +56,7 @@ export default async function chat(
     return 1;
   }
 
-  const params = new URLSearchParams();
+  const params = await getSupportScopeParams(client);
   if (limit !== undefined) params.set('limit', String(limit));
   if (cursor !== undefined) params.set('cursor', String(cursor));
 

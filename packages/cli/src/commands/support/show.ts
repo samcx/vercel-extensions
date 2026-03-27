@@ -6,6 +6,7 @@ import { getFlagsSpecification } from '../../util/get-flags-specification';
 import { showSubcommand } from './command';
 import { validateJsonOutput } from '../../util/output-format';
 import output from '../../output-manager';
+import { getSupportScopeParams } from './scope';
 
 interface SupportCase {
   id: string | null;
@@ -69,9 +70,12 @@ export default async function show(
     return 1;
   }
 
+  const params = await getSupportScopeParams(client);
+  const query = params.toString();
+
   output.spinner('Fetching support case');
   const response = await client.fetch<GetCaseResponse>(
-    `/v1/support/cases/${encodeURIComponent(caseId)}`
+    `/v1/support/cases/${encodeURIComponent(caseId)}${query ? `?${query}` : ''}`
   );
   output.stopSpinner();
 

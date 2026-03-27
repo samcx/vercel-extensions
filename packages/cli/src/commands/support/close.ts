@@ -4,6 +4,7 @@ import { printError } from '../../util/error';
 import { getFlagsSpecification } from '../../util/get-flags-specification';
 import { closeSubcommand } from './command';
 import output from '../../output-manager';
+import { getSupportScopeParams } from './scope';
 
 interface SupportCase {
   id: string | null;
@@ -53,9 +54,12 @@ export default async function close(
     }
   }
 
+  const params = await getSupportScopeParams(client);
+  const query = params.toString();
+
   output.spinner('Closing support case');
   const response = await client.fetch<UpdateCaseResponse>(
-    `/v1/support/cases/${encodeURIComponent(caseId)}`,
+    `/v1/support/cases/${encodeURIComponent(caseId)}${query ? `?${query}` : ''}`,
     {
       method: 'PATCH',
       body: { status: 'closed' },

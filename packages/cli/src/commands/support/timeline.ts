@@ -6,6 +6,7 @@ import { getFlagsSpecification } from '../../util/get-flags-specification';
 import { timelineSubcommand } from './command';
 import { validateJsonOutput } from '../../util/output-format';
 import output from '../../output-manager';
+import { getSupportScopeParams } from './scope';
 
 interface TimelineAttachment {
   id: string;
@@ -119,9 +120,12 @@ export default async function timeline(
     return 1;
   }
 
+  const params = await getSupportScopeParams(client);
+  const query = params.toString();
+
   output.spinner('Fetching case timeline');
   const response = await client.fetch<GetTimelineResponse>(
-    `/v1/support/cases/${encodeURIComponent(caseId)}/timeline`
+    `/v1/support/cases/${encodeURIComponent(caseId)}/timeline${query ? `?${query}` : ''}`
   );
   output.stopSpinner();
 

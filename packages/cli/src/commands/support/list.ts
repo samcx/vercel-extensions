@@ -7,6 +7,7 @@ import { getFlagsSpecification } from '../../util/get-flags-specification';
 import { listSubcommand } from './command';
 import { validateJsonOutput } from '../../util/output-format';
 import output from '../../output-manager';
+import { getSupportScopeParams } from './scope';
 
 const VALID_STATUSES = ['open', 'closed', 'transferred'];
 const VALID_SORTS = ['createdAt', 'updatedAt', 'severity'];
@@ -74,7 +75,7 @@ export default async function list(
     return 1;
   }
 
-  const params = new URLSearchParams();
+  const params = await getSupportScopeParams(client);
   if (status) params.set('status', status);
   if (sort) params.set('sort', sort);
   if (limit !== undefined) params.set('limit', String(limit));
