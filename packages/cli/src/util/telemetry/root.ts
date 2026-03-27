@@ -250,13 +250,6 @@ export class RootTelemetryClient extends TelemetryClient {
     });
   }
 
-  trackCliCommandD0(actual: string) {
-    this.trackCliCommand({
-      command: 'd0',
-      value: actual,
-    });
-  }
-
   trackCliCommandMetrics(actual: string) {
     this.trackCliCommand({
       command: 'metrics',

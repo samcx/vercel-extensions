@@ -1,5 +1,4 @@
 import { agentCommand } from './agent/command';
-import { d0Command } from './d0/command';
 import { activityCommand } from './activity/command';
 import { alertsCommand } from './alerts/command';
 import { aliasCommand } from './alias/command';
@@ -119,10 +118,6 @@ if (process.env.FF_GUIDANCE_MODE) {
 
 if (process.env.FF_METRICS) {
   commandsStructs.push(metricsCommand);
-}
-
-if (process.env.FF_D0) {
-  commandsStructs.push(d0Command);
 }
 
 export function getCommandAliases(command: Pick<Command, 'name' | 'aliases'>) {
