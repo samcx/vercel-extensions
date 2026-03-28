@@ -8,7 +8,6 @@ export async function getSupportScopeParams(
   const { team } = await getScope(client);
   if (team) {
     params.set('teamId', team.id);
-    params.set('slug', team.slug);
   }
   return params;
 }

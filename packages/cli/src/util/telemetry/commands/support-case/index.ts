@@ -1,10 +1,10 @@
 import { TelemetryClient } from '../..';
 import type { TelemetryMethods } from '../../types';
-import type { supportCommand } from '../../../../commands/support/command';
+import type { supportCaseCommand } from '../../../../commands/support-case/command';
 
-export class SupportTelemetryClient
+export class SupportCaseTelemetryClient
   extends TelemetryClient
-  implements TelemetryMethods<typeof supportCommand>
+  implements TelemetryMethods<typeof supportCaseCommand>
 {
   trackCliSubcommandList(actual: string) {
     this.trackCliSubcommand({ subcommand: 'list', value: actual });

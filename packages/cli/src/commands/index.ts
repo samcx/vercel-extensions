@@ -45,7 +45,7 @@ import { routesCommand } from './routes/command';
 import { rollbackCommand } from './rollback/command';
 import { rollingReleaseCommand } from './rolling-release/command';
 import { skillsCommand } from './skills/command';
-import { supportCommand } from './support/command';
+import { supportCaseCommand } from './support-case/command';
 import { targetCommand } from './target/command';
 import { teamsCommand } from './teams/command';
 import { telemetryCommand } from './telemetry/command';
@@ -104,7 +104,7 @@ const commandsStructs = [
   rollbackCommand,
   rollingReleaseCommand,
   skillsCommand,
-  supportCommand,
+  supportCaseCommand,
   targetCommand,
   teamsCommand,
   telemetryCommand,

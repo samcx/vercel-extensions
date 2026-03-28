@@ -47,7 +47,7 @@ export { default as rollback } from './commands/rollback';
 export { default as rollingRelease } from './commands/rolling-release';
 export { default as routes } from './commands/routes';
 export { default as skills } from './commands/skills';
-export { default as support } from './commands/support';
+export { default as supportCase } from './commands/support-case';
 export { default as target } from './commands/target';
 export { default as teams } from './commands/teams';
 export { default as telemetry } from './commands/telemetry';

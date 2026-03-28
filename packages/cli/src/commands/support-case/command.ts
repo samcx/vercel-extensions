@@ -53,15 +53,15 @@ export const listSubcommand = {
   examples: [
     {
       name: 'List all open support cases',
-      value: `${packageName} support list --status open`,
+      value: `${packageName} support-case list --status open`,
     },
     {
       name: 'List cases sorted by severity',
-      value: `${packageName} support list --sort severity`,
+      value: `${packageName} support-case list --sort severity`,
     },
     {
       name: 'List cases as JSON',
-      value: `${packageName} support list --format json`,
+      value: `${packageName} support-case list --format json`,
     },
   ],
 } as const;
@@ -75,11 +75,11 @@ export const showSubcommand = {
   examples: [
     {
       name: 'Show case details',
-      value: `${packageName} support show <caseId>`,
+      value: `${packageName} support-case show <caseId>`,
     },
     {
       name: 'Show case details as JSON',
-      value: `${packageName} support show <caseId> --format json`,
+      value: `${packageName} support-case show <caseId> --format json`,
     },
   ],
 } as const;
@@ -93,11 +93,11 @@ export const closeSubcommand = {
   examples: [
     {
       name: 'Close a support case',
-      value: `${packageName} support close <caseId>`,
+      value: `${packageName} support-case close <caseId>`,
     },
     {
       name: 'Close without confirmation',
-      value: `${packageName} support close <caseId> --yes`,
+      value: `${packageName} support-case close <caseId> --yes`,
     },
   ],
 } as const;
@@ -111,11 +111,11 @@ export const timelineSubcommand = {
   examples: [
     {
       name: 'View case timeline',
-      value: `${packageName} support timeline <caseId>`,
+      value: `${packageName} support-case timeline <caseId>`,
     },
     {
       name: 'View timeline as JSON',
-      value: `${packageName} support timeline <caseId> --format json`,
+      value: `${packageName} support-case timeline <caseId> --format json`,
     },
   ],
 } as const;
@@ -147,17 +147,17 @@ export const chatSubcommand = {
   examples: [
     {
       name: 'View chat messages',
-      value: `${packageName} support chat <caseId>`,
+      value: `${packageName} support-case chat <caseId>`,
     },
     {
       name: 'View chat messages as JSON',
-      value: `${packageName} support chat <caseId> --format json`,
+      value: `${packageName} support-case chat <caseId> --format json`,
     },
   ],
 } as const;
 
-export const supportCommand = {
-  name: 'support',
+export const supportCaseCommand = {
+  name: 'support-case',
   aliases: [],
   description: 'Manage Vercel support cases',
   arguments: [],

@@ -9,7 +9,7 @@ import close from './close';
 import timeline from './timeline';
 import chat from './chat';
 import {
-  supportCommand,
+  supportCaseCommand,
   listSubcommand,
   showSubcommand,
   closeSubcommand,
@@ -17,7 +17,7 @@ import {
   chatSubcommand,
 } from './command';
 import { getFlagsSpecification } from '../../util/get-flags-specification';
-import { SupportTelemetryClient } from '../../util/telemetry/commands/support';
+import { SupportCaseTelemetryClient } from '../../util/telemetry/commands/support-case';
 import output from '../../output-manager';
 import { getCommandAliases } from '..';
 
@@ -29,15 +29,15 @@ const COMMAND_CONFIG = {
   chat: getCommandAliases(chatSubcommand),
 };
 
-export default async function support(client: Client) {
-  const telemetry = new SupportTelemetryClient({
+export default async function supportCase(client: Client) {
+  const telemetry = new SupportCaseTelemetryClient({
     opts: {
       store: client.telemetryEventStore,
     },
   });
 
   let parsedArguments;
-  const flagsSpecification = getFlagsSpecification(supportCommand.options);
+  const flagsSpecification = getFlagsSpecification(supportCaseCommand.options);
 
   try {
     parsedArguments = parseArguments(client.argv.slice(2), flagsSpecification, {
@@ -56,15 +56,15 @@ export default async function support(client: Client) {
   const needHelp = parsedArguments.flags['--help'];
 
   if (!subcommand && needHelp) {
-    telemetry.trackCliFlagHelp('support');
-    output.print(help(supportCommand, { columns: client.stderr.columns }));
+    telemetry.trackCliFlagHelp('support-case');
+    output.print(help(supportCaseCommand, { columns: client.stderr.columns }));
     return 2;
   }
 
   function printHelp(command: Command) {
     output.print(
       help(command, {
-        parent: supportCommand,
+        parent: supportCaseCommand,
         columns: client.stderr.columns,
       })
     );
@@ -73,7 +73,7 @@ export default async function support(client: Client) {
   switch (subcommand) {
     case 'show':
       if (needHelp) {
-        telemetry.trackCliFlagHelp('support', subcommandOriginal);
+        telemetry.trackCliFlagHelp('support-case', subcommandOriginal);
         printHelp(showSubcommand);
         return 2;
       }
@@ -81,7 +81,7 @@ export default async function support(client: Client) {
       return show(client, args);
     case 'close':
       if (needHelp) {
-        telemetry.trackCliFlagHelp('support', subcommandOriginal);
+        telemetry.trackCliFlagHelp('support-case', subcommandOriginal);
         printHelp(closeSubcommand);
         return 2;
       }
@@ -89,7 +89,7 @@ export default async function support(client: Client) {
       return close(client, args);
     case 'timeline':
       if (needHelp) {
-        telemetry.trackCliFlagHelp('support', subcommandOriginal);
+        telemetry.trackCliFlagHelp('support-case', subcommandOriginal);
         printHelp(timelineSubcommand);
         return 2;
       }
@@ -97,7 +97,7 @@ export default async function support(client: Client) {
       return timeline(client, args);
     case 'chat':
       if (needHelp) {
-        telemetry.trackCliFlagHelp('support', subcommandOriginal);
+        telemetry.trackCliFlagHelp('support-case', subcommandOriginal);
         printHelp(chatSubcommand);
         return 2;
       }
@@ -105,7 +105,7 @@ export default async function support(client: Client) {
       return chat(client, args);
     default:
       if (needHelp) {
-        telemetry.trackCliFlagHelp('support', subcommandOriginal);
+        telemetry.trackCliFlagHelp('support-case', subcommandOriginal);
         printHelp(listSubcommand);
         return 2;
       }

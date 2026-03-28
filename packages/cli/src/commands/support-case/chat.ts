@@ -103,7 +103,7 @@ export default async function chat(
   client.stderr.write(lines.join('\n'));
 
   if (response.hasMore && response.nextCursor !== undefined) {
-    const nextCmd = `${packageName} support chat ${caseId} --cursor ${response.nextCursor}`;
+    const nextCmd = `${packageName} support-case chat ${caseId} --cursor ${response.nextCursor}`;
     output.log(`To display the next page run ${cmd(nextCmd)}`);
   }
 
