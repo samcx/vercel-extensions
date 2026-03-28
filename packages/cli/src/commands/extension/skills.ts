@@ -27,17 +27,20 @@ export default async function skills(
   let copied = 0;
 
   for (const ext of extensions) {
-    const skillsDir = path.join(ext.path, 'skills');
+    const candidates = [
+      path.join(ext.path, 'skills'),
+      path.join(ext.path, '.agents', 'skills'),
+    ];
 
-    if (!existsSync(skillsDir)) {
-      continue;
-    }
-
-    try {
-      if (!statSync(skillsDir).isDirectory()) {
-        continue;
+    const skillsDir = candidates.find(dir => {
+      try {
+        return existsSync(dir) && statSync(dir).isDirectory();
+      } catch {
+        return false;
       }
-    } catch {
+    });
+
+    if (!skillsDir) {
       continue;
     }
 
