@@ -348,6 +348,13 @@ export class RootTelemetryClient extends TelemetryClient {
     });
   }
 
+  trackCliCommandSupportCase(actual: string) {
+    this.trackCliCommand({
+      command: 'support-case',
+      value: actual,
+    });
+  }
+
   trackCliCommandTarget(actual: string) {
     this.trackCliCommand({
       command: 'target',

@@ -928,6 +928,10 @@ const main = async () => {
           telemetry.trackCliCommandSkills(userSuppliedSubCommand);
           func = (await import('./commands-bulk.js')).skills;
           break;
+        case 'support-case':
+          telemetry.trackCliCommandSupportCase(userSuppliedSubCommand);
+          func = (await import('./commands-bulk.js')).supportCase;
+          break;
         case 'target':
           telemetry.trackCliCommandTarget(userSuppliedSubCommand);
           func = (await import('./commands-bulk.js')).target;
